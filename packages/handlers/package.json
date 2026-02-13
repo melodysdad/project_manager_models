@@ -1,0 +1,30 @@
+{
+  "name": "@project-manager/transition-handlers",
+  "version": "1.0.0",
+  "description": "Base handler classes and utilities for project manager transition events",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "project-manager",
+    "lambda",
+    "handlers",
+    "transition-events"
+  ],
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "peerDependencies": {
+    "@project-manager/models": "^1.0.0"
+  }
+}
