@@ -71,3 +71,60 @@ export function createCloudEvent<T>(
   };
 }
 
+/**
+ * Create a ConversationStarted event
+ */
+export function createConversationStartedEvent<T = unknown>(
+  data?: T,
+  options?: {
+    id?: string;
+    time?: string;
+    subject?: string;
+  }
+): CloudEvent<T> {
+  return createCloudEvent<T>(
+    "project_manager.conversation.started",
+    "project_manager",
+    data,
+    options
+  );
+}
+
+/**
+ * Create a ConversationCheckpointCreated event
+ */
+export function createConversationCheckpointCreatedEvent<T = unknown>(
+  data?: T,
+  options?: {
+    id?: string;
+    time?: string;
+    subject?: string;
+  }
+): CloudEvent<T> {
+  return createCloudEvent<T>(
+    "project_manager.conversation.checkpoint.created",
+    "project_manager",
+    data,
+    options
+  );
+}
+
+/**
+ * Create a MessageAdded event
+ */
+export function createMessageAddedEvent<T = unknown>(
+  data?: T,
+  options?: {
+    id?: string;
+    time?: string;
+    subject?: string;
+  }
+): CloudEvent<T> {
+  return createCloudEvent<T>(
+    "project_manager.message.added",
+    "project_manager",
+    data,
+    options
+  );
+}
+

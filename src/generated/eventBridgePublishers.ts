@@ -13,7 +13,11 @@ const eventBridgeClient = new EventBridgeClient();
  * pattern_name format allows targeting specific patterns
  */
 type DetailType =
-;
+  | "ConversationStarted"
+  | "ConversationCheckpointCreated"
+  | "TaskCreated"
+  | "TaskCheckpointCreated"
+  | "MessageAdded";
 
 /**
  * EventBridge event to be published
@@ -49,5 +53,92 @@ export async function publishToEventBridge(
   }
 
   return response.Entries?.[0]?.EventId || "unknown";
+}
+
+/**
+ * Publish ConversationStarted event to EventBridge
+ *
+ * Routes to SQS queues configured for: project_manager.conversation.started
+ */
+export async function publishConversationStarted(
+  cloudEvent: CloudEvent,
+  options?: {
+    eventBusName?: string;
+  }
+): Promise<string> {
+  const eventBridgeEvent: EventBridgeEvent = {
+    source: cloudEvent.source,
+    "detail-type": "ConversationStarted",
+    detail: {
+      // CloudEvent metadata
+      specversion: cloudEvent.specversion,
+      id: cloudEvent.id,
+      time: cloudEvent.time,
+      subject: cloudEvent.subject,
+      // Event data
+      ...cloudEvent.data,
+    },
+    "event-bus-name": options?.eventBusName,
+  };
+
+  return publishToEventBridge(eventBridgeEvent);
+}
+
+/**
+ * Publish ConversationCheckpointCreated event to EventBridge
+ *
+ * Routes to SQS queues configured for: project_manager.conversation.checkpoint.created
+ */
+export async function publishConversationCheckpointCreated(
+  cloudEvent: CloudEvent,
+  options?: {
+    eventBusName?: string;
+  }
+): Promise<string> {
+  const eventBridgeEvent: EventBridgeEvent = {
+    source: cloudEvent.source,
+    "detail-type": "ConversationCheckpointCreated",
+    detail: {
+      // CloudEvent metadata
+      specversion: cloudEvent.specversion,
+      id: cloudEvent.id,
+      time: cloudEvent.time,
+      subject: cloudEvent.subject,
+      // Event data
+      ...cloudEvent.data,
+    },
+    "event-bus-name": options?.eventBusName,
+  };
+
+  return publishToEventBridge(eventBridgeEvent);
+}
+
+/**
+ * Publish MessageAdded event to EventBridge
+ *
+ * Routes to SQS queues configured for: project_manager.message.added
+ */
+export async function publishMessageAdded(
+  cloudEvent: CloudEvent,
+  options?: {
+    eventBusName?: string;
+  }
+): Promise<string> {
+  const eventBridgeEvent: EventBridgeEvent = {
+    source: cloudEvent.source,
+    "detail-type": "MessageAdded",
+    detail: {
+      // CloudEvent metadata
+      specversion: cloudEvent.specversion,
+      id: cloudEvent.id,
+      time: cloudEvent.time,
+      subject: cloudEvent.subject,
+      // Event data
+      ...cloudEvent.data,
+    },
+    "event-bus-name": options?.eventBusName,
+  };
+
+  return publishToEventBridge(eventBridgeEvent);
 }
 
