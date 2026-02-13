@@ -45,16 +45,17 @@ export function parsePrimitives(filePath: string): ParsedPrimitives {
       ? descriptionMatch[1].trim().replace(/\n\n/g, " ")
       : "";
 
-    // Extract fields section - capture everything after "#### Fields\n\n"
+    // Extract fields section - capture everything after "#### Fields"
     const fieldsMatch = section.match(
-      /#### Fields\n\n([\s\S]*)/
+      /#### Fields.*?\n([\s\S]*)/
     );
     const fieldsSection = fieldsMatch ? fieldsMatch[1] : "";
 
     const fields: FieldDefinition[] = [];
     const fieldLines = fieldsSection.split("\n");
 
-    for (const line of fieldLines) {
+    for (let i = 0; i < fieldLines.length; i++) {
+      const line = fieldLines[i];
       // Match lines starting with * or - followed by field definition
       const fieldMatch = line.match(
         /^[\s]*[-*]\s+(\w+)(\??)\s*:\s*(.+?)$/
@@ -62,7 +63,35 @@ export function parsePrimitives(filePath: string): ParsedPrimitives {
       if (fieldMatch) {
         const fullName = fieldMatch[1];
         const questionMark = fieldMatch[2];
-        const fieldType = fieldMatch[3].trim();
+        let fieldType = fieldMatch[3].trim();
+
+        // Handle multi-line field definitions (e.g., enum with indented values)
+        if (fieldType.includes("Enum with the following possible values")) {
+          const enumValues: string[] = [];
+          let j = i + 1;
+
+          // Collect following indented lines that are enum values
+          while (j < fieldLines.length) {
+            const nextLine = fieldLines[j];
+            const enumMatch = nextLine.match(/^\s{2,}-\s+(\w+)/);
+            if (enumMatch) {
+              enumValues.push(enumMatch[1]);
+              j++;
+            } else if (nextLine.match(/^[\s]*[-*]/)) {
+              // Hit the next field definition
+              break;
+            } else if (nextLine.trim()) {
+              // Non-empty line that's not indented enum value
+              break;
+            } else {
+              j++;
+            }
+          }
+
+          if (enumValues.length > 0) {
+            fieldType = `ENUM (${enumValues.join(" | ")})`;
+          }
+        }
 
         fields.push({
           name: fullName,

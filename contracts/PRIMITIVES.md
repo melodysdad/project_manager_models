@@ -38,6 +38,7 @@ Represents a person, system, or AI that can participate in conversations, decisi
 * updated_at: timestamp
 
 ### Conversation
+
 Represents a conversation initiated by a human Actor
 
 #### Fields
@@ -52,6 +53,7 @@ Represents a conversation initiated by a human Actor
 - updated_at: timestamp
 
 ### ConversationCheckpoint
+
 An important point in the lifecycle of a conversation. A new checkpoint is created each time the LLM processes the conversation, with the summary field containing a versioned summary of the conversation state.
 
 #### Fields

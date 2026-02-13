@@ -1,23 +1,5 @@
 export function mapMarkdownTypeToTypeScript(markdownType: string): string {
-  const typeMap: Record<string, string> = {
-    GUID: "string",
-    string: "string",
-    timestamp: "Date | number",
-    boolean: "boolean",
-    "ENUM(HUMAN | SYSTEM | AI)": "'HUMAN' | 'SYSTEM' | 'AI'",
-    "Enum with the following possible values:": "string", // Will be handled specially
-    "ENUM (WORK_STARTED | WORK_PAUSED | WORK_COMPLETED | WORK_REJECTED|WORK_APPROVED)":
-      "'WORK_STARTED' | 'WORK_PAUSED' | 'WORK_COMPLETED' | 'WORK_REJECTED' | 'WORK_APPROVED'",
-  };
-
-  // Check exact matches first
-  for (const [key, value] of Object.entries(typeMap)) {
-    if (markdownType.includes(key)) {
-      return value;
-    }
-  }
-
-  // Handle array types
+  // Handle array types first (before checking other patterns)
   if (markdownType.includes("[")) {
     const innerType = markdownType.match(/\[(.*?)\]/)?.[1] || "unknown";
     if (innerType.includes("{")) {
@@ -27,7 +9,35 @@ export function mapMarkdownTypeToTypeScript(markdownType: string): string {
       }
       return "Array<Record<string, unknown>>";
     }
-    return `${mapMarkdownTypeToTypeScript(innerType)}[]`;
+    // Recursively map the inner type
+    const mappedInnerType = mapMarkdownTypeToTypeScript(innerType.trim());
+    return `${mappedInnerType}[]`;
+  }
+
+  // Handle ENUM types
+  if (markdownType.includes("ENUM")) {
+    const enumMatch = markdownType.match(/ENUM\s*\(([^)]+)\)/i);
+    if (enumMatch) {
+      const values = enumMatch[1]
+        .split("|")
+        .map((v) => `'${v.trim()}'`)
+        .join(" | ");
+      return values;
+    }
+  }
+
+  const typeMap: Record<string, string> = {
+    GUID: "string",
+    string: "string",
+    timestamp: "Date | number",
+    boolean: "boolean",
+  };
+
+  // Check exact matches
+  for (const [key, value] of Object.entries(typeMap)) {
+    if (markdownType.includes(key)) {
+      return value;
+    }
   }
 
   // Default
@@ -35,25 +45,7 @@ export function mapMarkdownTypeToTypeScript(markdownType: string): string {
 }
 
 export function mapMarkdownTypeToZod(markdownType: string): string {
-  const zodeMap: Record<string, string> = {
-    GUID: "z.string().uuid()",
-    string: "z.string()",
-    timestamp: "z.union([z.date(), z.number()])",
-    boolean: "z.boolean()",
-    "ENUM(HUMAN | SYSTEM | AI)":
-      "z.enum(['HUMAN', 'SYSTEM', 'AI'])",
-    "ENUM (WORK_STARTED | WORK_PAUSED | WORK_COMPLETED | WORK_REJECTED|WORK_APPROVED)":
-      "z.enum(['WORK_STARTED', 'WORK_PAUSED', 'WORK_COMPLETED', 'WORK_REJECTED', 'WORK_APPROVED'])",
-  };
-
-  // Check exact matches first
-  for (const [key, value] of Object.entries(zodeMap)) {
-    if (markdownType.includes(key)) {
-      return value;
-    }
-  }
-
-  // Handle array types
+  // Handle array types first (before checking other patterns)
   if (markdownType.includes("[")) {
     const innerType = markdownType.match(/\[(.*?)\]/)?.[1] || "unknown";
     if (innerType.includes("{")) {
@@ -63,7 +55,35 @@ export function mapMarkdownTypeToZod(markdownType: string): string {
       }
       return "z.array(z.record(z.unknown()))";
     }
-    return `z.array(${mapMarkdownTypeToZod(innerType)})`;
+    // Recursively map the inner type
+    const mappedInnerType = mapMarkdownTypeToZod(innerType.trim());
+    return `z.array(${mappedInnerType})`;
+  }
+
+  // Handle ENUM types
+  if (markdownType.includes("ENUM")) {
+    const enumMatch = markdownType.match(/ENUM\s*\(([^)]+)\)/i);
+    if (enumMatch) {
+      const values = enumMatch[1]
+        .split("|")
+        .map((v) => `'${v.trim()}'`)
+        .join(", ");
+      return `z.enum([${values}])`;
+    }
+  }
+
+  const zodeMap: Record<string, string> = {
+    GUID: "z.string().uuid()",
+    string: "z.string()",
+    timestamp: "z.union([z.date(), z.number()])",
+    boolean: "z.boolean()",
+  };
+
+  // Check exact matches
+  for (const [key, value] of Object.entries(zodeMap)) {
+    if (markdownType.includes(key)) {
+      return value;
+    }
   }
 
   // Default
