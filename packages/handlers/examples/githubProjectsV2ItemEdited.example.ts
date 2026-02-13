@@ -5,7 +5,7 @@
  * Demonstrates signature verification and change tracking.
  */
 
-import { GitHubWebhookHandler } from "../src/index.ts";
+import { GitHubWebhookHandler, ProjectsV2ItemEditedPayloadSchema } from "../src/index.ts";
 import type { ProjectsV2ItemEditedPayload } from "../src/index.ts";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
@@ -22,6 +22,9 @@ export class ProjectsV2ItemEditedHandler
   webhookAction = "edited";
 
   async process(payload: ProjectsV2ItemEditedPayload): Promise<void> {
+    // Optional: Validate payload against schema at runtime
+    // const validated = this.validate(ProjectsV2ItemEditedPayloadSchema, payload);
+
     const projectId = payload.projects_v2.id;
     const projectTitle = payload.projects_v2.title;
     const changedBy = payload.sender.login;

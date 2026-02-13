@@ -57,3 +57,16 @@ export type {
   PullRequestPayload,
   PushPayload,
 } from "./githubTypes.ts";
+
+// GitHub webhook validation schemas
+export {
+  GitHubUserSchema,
+  GitHubOrganizationSchema,
+  ProjectsV2Schema,
+  ProjectsV2ItemSchema,
+  ProjectsV2ItemEditedPayloadSchema,
+  IssuesPayloadSchema,
+  PullRequestPayloadSchema,
+  PushPayloadSchema,
+  validateGitHubPayload,
+} from "./githubSchemas.ts";
