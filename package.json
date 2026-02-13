@@ -1,0 +1,19 @@
+{
+  "name": "project-manager-models",
+  "version": "1.0.0",
+  "description": "TypeScript models and validators for Project Manager primitives and transitions",
+  "type": "module",
+  "scripts": {
+    "generate": "tsx src/generate.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/generate.ts"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0"
+  }
+}
