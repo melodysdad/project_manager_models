@@ -41,10 +41,10 @@
  */
 
 // CloudEvent handlers
-export { TransitionHandler, type CloudEvent, type LambdaResponse } from "./baseHandler.ts";
+export { TransitionHandler, type CloudEvent, type LambdaResponse } from "./baseHandler";
 
 // GitHub webhook handlers
-export { GitHubWebhookHandler, type APIGatewayProxyEvent } from "./githubWebhookHandler.ts";
+export { GitHubWebhookHandler, type APIGatewayProxyEvent } from "./githubWebhookHandler";
 
 // GitHub webhook types
 export type {
@@ -56,7 +56,7 @@ export type {
   IssuesPayload,
   PullRequestPayload,
   PushPayload,
-} from "./githubTypes.ts";
+} from "./githubTypes";
 
 // GitHub webhook validation schemas
 export {
@@ -69,4 +69,4 @@ export {
   PullRequestPayloadSchema,
   PushPayloadSchema,
   validateGitHubPayload,
-} from "./githubSchemas.ts";
+} from "./githubSchemas";

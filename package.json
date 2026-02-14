@@ -12,7 +12,12 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^12.0.0",
+    "@semantic-release/release-notes-generator": "^12.1.0",
     "@types/node": "^20.10.6",
+    "semantic-release": "^23.0.2",
     "typescript": "^5.3.3",
     "tsx": "^4.7.0"
   }
