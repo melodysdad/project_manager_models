@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "TypeScript models and validators for Project Manager primitives and transitions",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "generate": "tsx src/generate.ts",
     "build": "tsc",
